@@ -1,0 +1,23 @@
+<h1>Streaming (Kafka)</h1>
+<p class="nota">
+  Dos tópicos de negocio con 3 particiones y 3 réplicas. Los eventos se publican con el DTO
+  <code>EventoMensajeria</code> y los consumidores alimentan notificaciones y auditoría.
+</p>
+
+<mat-tab-group animationDuration="150ms">
+  <mat-tab label="Tópicos">
+    <ng-template matTabContent><app-topics-panel /></ng-template>
+  </mat-tab>
+  <mat-tab label="Consumer groups">
+    <ng-template matTabContent><app-consumer-groups-panel /></ng-template>
+  </mat-tab>
+  <mat-tab label="Publicar evento">
+    <ng-template matTabContent><app-publicar-panel /></ng-template>
+  </mat-tab>
+  <mat-tab label="Métricas en vivo">
+    <ng-template matTabContent><app-metrics-panel /></ng-template>
+  </mat-tab>
+  <mat-tab label="Auditoría">
+    <ng-template matTabContent><app-auditoria-panel /></ng-template>
+  </mat-tab>
+</mat-tab-group>

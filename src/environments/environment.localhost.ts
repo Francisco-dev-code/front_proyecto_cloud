@@ -3,6 +3,8 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:8080',
+  kafkaAdminUrl: 'http://localhost:8081',
+  rabbitAdminUrl: 'http://localhost:8082',
   entra: {
     enabled: true,
     // true si el tenant permite auto-registro (Entra External ID). Si es false, «Crear cuenta» usa el login normal.

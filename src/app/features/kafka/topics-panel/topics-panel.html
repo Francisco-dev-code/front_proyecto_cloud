@@ -1,0 +1,113 @@
+<div class="acciones">
+  <button mat-flat-button type="button" (click)="cargar()">
+    <mat-icon>refresh</mat-icon> Actualizar lista
+  </button>
+  @if (cargando()) {
+    <mat-spinner diameter="24" />
+  }
+</div>
+
+<table mat-table [dataSource]="datos()" class="tabla">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Nombre</th>
+    <td mat-cell *matCellDef="let topic">{{ topic.name }}</td>
+  </ng-container>
+  <ng-container matColumnDef="partitions">
+    <th mat-header-cell *matHeaderCellDef>Particiones</th>
+    <td mat-cell *matCellDef="let topic">{{ topic.partitions }}</td>
+  </ng-container>
+  <ng-container matColumnDef="replicationFactor">
+    <th mat-header-cell *matHeaderCellDef>Réplicas</th>
+    <td mat-cell *matCellDef="let topic">{{ topic.replicationFactor }}</td>
+  </ng-container>
+  <ng-container matColumnDef="retencion">
+    <th mat-header-cell *matHeaderCellDef>Retención (ms)</th>
+    <td mat-cell *matCellDef="let topic">{{ retencion(topic) }}</td>
+  </ng-container>
+  <ng-container matColumnDef="acciones">
+    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+    <td mat-cell *matCellDef="let topic">
+      <button mat-icon-button type="button" (click)="verDetalle(topic)" title="Ver configuración">
+        <mat-icon>tune</mat-icon>
+      </button>
+      <button mat-icon-button type="button" color="warn" (click)="eliminar(topic)" title="Eliminar">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+</table>
+
+@if (datos().length === 0 && !cargando()) {
+  <p class="vacio">No hay tópicos para mostrar.</p>
+}
+
+<h3>Crear tópico</h3>
+<form class="formulario" [formGroup]="formulario" (ngSubmit)="crear()">
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name" placeholder="biblioteca.demo" />
+    <mat-error>Usa letras, números, punto, guion o guion bajo (máx. 249)</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Particiones</mat-label>
+    <input matInput type="number" formControlName="partitions" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Réplicas</mat-label>
+    <input matInput type="number" formControlName="replicationFactor" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>retention.ms</mat-label>
+    <input matInput formControlName="retention" />
+  </mat-form-field>
+  <button mat-flat-button color="primary" type="submit" [disabled]="guardando()">
+    <mat-icon>add</mat-icon> Crear
+  </button>
+</form>
+
+@if (detalle(); as topic) {
+  <section class="detalle">
+    <h3>Configuración de {{ topic.name }}</h3>
+    <p class="nota">{{ topic.partitions }} particiones · {{ topic.replicationFactor }} réplicas</p>
+
+    <table mat-table [dataSource]="entradasConfigs()" class="tabla">
+      <ng-container matColumnDef="clave">
+        <th mat-header-cell *matHeaderCellDef>Parámetro</th>
+        <td mat-cell *matCellDef="let entry">{{ entry.clave }}</td>
+      </ng-container>
+      <ng-container matColumnDef="valor">
+        <th mat-header-cell *matHeaderCellDef>Valor</th>
+        <td mat-cell *matCellDef="let entry">{{ entry.valor }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['clave', 'valor']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['clave', 'valor']"></tr>
+    </table>
+
+    <form class="formulario" [formGroup]="formularioActualizacion" (ngSubmit)="actualizar()">
+      <mat-form-field appearance="outline">
+        <mat-label>Nuevo número de particiones</mat-label>
+        <input matInput type="number" formControlName="partitions" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>retention.ms</mat-label>
+        <input matInput formControlName="retention" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>cleanup.policy</mat-label>
+        <mat-select formControlName="cleanupPolicy">
+          <mat-option value="delete">delete</mat-option>
+          <mat-option value="compact">compact</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit" [disabled]="guardando()">
+        <mat-icon>save</mat-icon> Guardar cambios
+      </button>
+    </form>
+    <p class="nota">
+      Kafka solo permite aumentar particiones; el factor de réplicas no se cambia con PUT.
+    </p>
+  </section>
+}

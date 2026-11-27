@@ -1,8 +1,12 @@
 // Entorno por defecto (producción y desarrollo): backend detrás de AWS API Gateway.
-// `apiUrl` es la URL BASE, sin el sufijo /api (los servicios lo agregan).
+// Las URLs son BASES, sin el sufijo /api (los servicios lo agregan).
+// Si en la nube los administradores tienen API Manager propio, cambia kafkaAdminUrl y
+// rabbitAdminUrl por sus bases; si están en el mismo Gateway, déjalas igual que apiUrl.
 export const environment = {
   production: true,
   apiUrl: 'https://0merzvv7vb.execute-api.us-east-1.amazonaws.com',
+  kafkaAdminUrl: 'https://0merzvv7vb.execute-api.us-east-1.amazonaws.com',
+  rabbitAdminUrl: 'https://0merzvv7vb.execute-api.us-east-1.amazonaws.com',
   entra: {
     enabled: true,
     // true si el tenant permite auto-registro (Entra External ID). Si es false, «Crear cuenta» usa el login normal.

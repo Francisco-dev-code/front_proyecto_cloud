@@ -45,6 +45,10 @@ export const routes: Routes = [
           import('./features/mensajeria/mensajeria').then((m) => m.MensajeriaComponent)
       },
       {
+        path: 'kafka',
+        loadComponent: () => import('./features/kafka/kafka').then((m) => m.KafkaComponent)
+      },
+      {
         path: 'notificaciones',
         loadComponent: () =>
           import('./features/notificaciones/notificaciones-list').then(

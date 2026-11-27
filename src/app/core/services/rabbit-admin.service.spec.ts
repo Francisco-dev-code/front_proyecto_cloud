@@ -6,7 +6,8 @@ import { NotificacionService } from './notificacion.service';
 import { environment } from '../../../environments/environment';
 
 describe('RabbitAdminService', () => {
-  const base = `${environment.apiUrl.replace(/\/+$/, '')}/api`;
+  const base = `${environment.rabbitAdminUrl.replace(/\/+$/, '')}/api`;
+  const apiBase = `${environment.apiUrl.replace(/\/+$/, '')}/api`;
   let servicio: RabbitAdminService;
   let http: HttpTestingController;
 
@@ -63,6 +64,6 @@ describe('RabbitAdminService', () => {
 
   it('lista notificaciones en /api/notificaciones', () => {
     TestBed.inject(NotificacionService).getAll().subscribe();
-    http.expectOne(`${base}/notificaciones`).flush([]);
+    http.expectOne(`${apiBase}/notificaciones`).flush([]);
   });
 });

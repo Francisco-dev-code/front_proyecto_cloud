@@ -1,0 +1,115 @@
+@if (datos(); as metrics) {
+  <p class="nota">
+    <mat-icon inline>update</mat-icon>
+    Actualizado: {{ actualizado() }} · próxima consulta en {{ intervaloSegundos() }} s
+  </p>
+
+  <div class="tarjetas">
+    <mat-card class="tarjeta">
+      <mat-card-subtitle>Eventos/min</mat-card-subtitle>
+      <strong>{{ metrics.summary.eventsPerMinute }}</strong>
+    </mat-card>
+    <mat-card class="tarjeta">
+      <mat-card-subtitle>Fallos totales</mat-card-subtitle>
+      <strong>{{ metrics.summary.totalFailures }}</strong>
+    </mat-card>
+    <mat-card class="tarjeta">
+      <mat-card-subtitle>Lag total</mat-card-subtitle>
+      <strong>{{ metrics.summary.totalLag }}</strong>
+    </mat-card>
+    <mat-card class="tarjeta">
+      <mat-card-subtitle>Tópicos</mat-card-subtitle>
+      <strong>{{ metrics.topics.length }}</strong>
+    </mat-card>
+  </div>
+
+  <section class="seccion">
+    <h3>Tópicos</h3>
+    <table mat-table [dataSource]="metrics.topics" class="tabla">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Tópico</th>
+        <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="partitions">
+        <th mat-header-cell *matHeaderCellDef>Particiones</th>
+        <td mat-cell *matCellDef="let row">{{ row.partitions }}</td>
+      </ng-container>
+      <ng-container matColumnDef="replicationFactor">
+        <th mat-header-cell *matHeaderCellDef>Réplicas</th>
+        <td mat-cell *matCellDef="let row">{{ row.replicationFactor }}</td>
+      </ng-container>
+      <ng-container matColumnDef="totalMessages">
+        <th mat-header-cell *matHeaderCellDef>Mensajes</th>
+        <td mat-cell *matCellDef="let row">{{ row.totalMessages }}</td>
+      </ng-container>
+      <ng-container matColumnDef="eventsPerMinute">
+        <th mat-header-cell *matHeaderCellDef>Eventos/min</th>
+        <td mat-cell *matCellDef="let row">{{ row.eventsPerMinute }}</td>
+      </ng-container>
+      <ng-container matColumnDef="failures">
+        <th mat-header-cell *matHeaderCellDef>Fallos</th>
+        <td mat-cell *matCellDef="let row">{{ row.failures }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasTopics"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasTopics"></tr>
+    </table>
+  </section>
+
+  <section class="seccion">
+    <h3>Consumer groups</h3>
+    <table mat-table [dataSource]="metrics.consumerGroups" class="tabla">
+      <ng-container matColumnDef="groupId">
+        <th mat-header-cell *matHeaderCellDef>Grupo</th>
+        <td mat-cell *matCellDef="let row">{{ row.groupId }}</td>
+      </ng-container>
+      <ng-container matColumnDef="state">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let row">{{ row.state }}</td>
+      </ng-container>
+      <ng-container matColumnDef="members">
+        <th mat-header-cell *matHeaderCellDef>Miembros</th>
+        <td mat-cell *matCellDef="let row">{{ row.members }}</td>
+      </ng-container>
+      <ng-container matColumnDef="totalLag">
+        <th mat-header-cell *matHeaderCellDef>Lag</th>
+        <td mat-cell *matCellDef="let row">{{ row.totalLag }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasGrupos"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasGrupos"></tr>
+    </table>
+  </section>
+
+  <section class="seccion">
+    <h3>Distribución por partición (offsets y lag)</h3>
+    <table mat-table [dataSource]="metrics.distribution" class="tabla">
+      <ng-container matColumnDef="groupId">
+        <th mat-header-cell *matHeaderCellDef>Grupo</th>
+        <td mat-cell *matCellDef="let row">{{ row.groupId }}</td>
+      </ng-container>
+      <ng-container matColumnDef="topic">
+        <th mat-header-cell *matHeaderCellDef>Tópico</th>
+        <td mat-cell *matCellDef="let row">{{ row.topic }}</td>
+      </ng-container>
+      <ng-container matColumnDef="partition">
+        <th mat-header-cell *matHeaderCellDef>Partición</th>
+        <td mat-cell *matCellDef="let row">{{ row.partition }}</td>
+      </ng-container>
+      <ng-container matColumnDef="committedOffset">
+        <th mat-header-cell *matHeaderCellDef>Committed</th>
+        <td mat-cell *matCellDef="let row">{{ row.committedOffset }}</td>
+      </ng-container>
+      <ng-container matColumnDef="endOffset">
+        <th mat-header-cell *matHeaderCellDef>End</th>
+        <td mat-cell *matCellDef="let row">{{ row.endOffset }}</td>
+      </ng-container>
+      <ng-container matColumnDef="lag">
+        <th mat-header-cell *matHeaderCellDef>Lag</th>
+        <td mat-cell *matCellDef="let row">{{ row.lag }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasDistribucion"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasDistribucion"></tr>
+    </table>
+  </section>
+} @else {
+  <p class="vacio">Cargando métricas de Kafka…</p>
+}

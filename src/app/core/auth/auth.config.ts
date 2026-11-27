@@ -42,10 +42,16 @@ export function msalGuardConfigFactory(): MsalGuardConfiguration {
 export function msalInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, string[]>();
 
-  const apiBase = environment.apiUrl.replace(/\/+$/, '');
+  // Los tres microservicios (API, admin Kafka y admin Rabbit) validan el mismo JWT.
+  const bases = [
+    environment.apiUrl,
+    environment.kafkaAdminUrl,
+    environment.rabbitAdminUrl
+  ].map((base) => base.replace(/\/+$/, ''));
 
-  // Todas las llamadas a {apiUrl}/api/* llevan el Access Token (Bearer).
-  protectedResourceMap.set(`${apiBase}/api/*`, [environment.entra.apiScope]);
+  for (const base of new Set(bases)) {
+    protectedResourceMap.set(`${base}/api/*`, [environment.entra.apiScope]);
+  }
 
   return {
     interactionType: InteractionType.Redirect,

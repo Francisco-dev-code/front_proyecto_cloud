@@ -45,7 +45,8 @@ export class LayoutComponent {
     { ruta: '/usuarios', etiqueta: 'Usuarios', icono: 'group' },
     { ruta: '/prestamos', etiqueta: 'Préstamos', icono: 'assignment_return' },
     { ruta: '/notificaciones', etiqueta: 'Notificaciones', icono: 'notifications' },
-    { ruta: '/mensajeria', etiqueta: 'Mensajería', icono: 'hub' }
+    { ruta: '/mensajeria', etiqueta: 'Mensajería (Rabbit)', icono: 'hub' },
+    { ruta: '/kafka', etiqueta: 'Streaming (Kafka)', icono: 'bolt' }
   ];
 
   private readonly esMovil = toSignal(

@@ -3,12 +3,20 @@
 Frontend standalone de Angular con login mediante **Microsoft Entra ID (MSAL)**. Consume el backend Spring Boot a través de **AWS API Gateway** enviando el JWT en cada llamada.
 
 ## Módulos
-Inicio · Libros (CRUD + búsqueda) · Autores · Categorías · Usuarios · Préstamos (CRUD + devolución) · **Notificaciones** · **Mensajería (RabbitMQ)**. Todas las vistas requieren sesión iniciada.
+Inicio · Libros (CRUD + búsqueda) · Autores · Categorías · Usuarios · Préstamos (CRUD + devolución) · **Notificaciones** · **Mensajería (RabbitMQ)** · **Streaming (Kafka)**. Todas las vistas requieren sesión iniciada.
 
 ### Mensajería con RabbitMQ (EFT)
 - **Mensajería**: administración del microservicio de RabbitMQ — crear/eliminar **colas** (con DLX/routing key de **DLQ** y TTL), **exchanges** y **bindings**, y **publicar mensajes de prueba** (productor).
 - **Notificaciones**: tareas asíncronas procesadas por los consumidores (notificaciones, tickets, documentos) con estado `PENDIENTE/PROCESADO/FALLIDO`; actualización manual o automática cada 5 s.
 - Contrato de endpoints y flujo de demostración: [`docs/CONTRATO-API-RABBITMQ.md`](docs/CONTRATO-API-RABBITMQ.md).
+
+### Streaming con Kafka (EFT)
+- **Tópicos**: crear, listar, ver configuración (particiones, réplicas, retention, cleanup policy), actualizar y eliminar.
+- **Consumer groups**: miembros, tópicos suscritos y particiones asignadas.
+- **Publicación**: DTO completo (`EventoMensajeria`), publicación rápida y mensaje inválido para demostrar el DLT.
+- **Métricas en vivo**: eventos/min, fallos, offsets, lag y distribución por partición con polling del intervalo que informa el backend.
+- **Auditoría**: filtros por fecha, tipo, usuario y correlationId sobre `/api/auditoria`.
+- Contrato y flujo de demostración: [`docs/CONTRATO-API-KAFKA-FRONTEND.md`](docs/CONTRATO-API-KAFKA-FRONTEND.md).
 
 ## Ejecutar
 ```bash
@@ -37,10 +45,10 @@ AWS API Gateway ──► Backend Spring Boot (EC2) ── valida firma, issuer 
 | Archivo | Uso |
 |---|---|
 | `environment.ts` | Por defecto (dev y prod): API Gateway |
-| `environment.localhost.ts` | `npm run start:local`: backend en localhost:8080 |
+| `environment.localhost.ts` | `npm run start:local`: backend real en 8080/8081/8082 con login |
 | `environment.example.ts` | Plantilla |
 
-`apiUrl` es la URL **base sin `/api`**; los servicios construyen `{apiUrl}/api/{recurso}`. Los IDs de tenant/cliente no son secretos; nunca agregues client secrets al repositorio.
+Las URLs son **bases sin `/api`**; los servicios construyen `{base}/api/{recurso}`. `apiUrl` apunta a la API principal, `kafkaAdminUrl` al administrador de Kafka y `rabbitAdminUrl` al de RabbitMQ. En local usan los puertos 8080/8081/8082; si en la nube los tres están tras el mismo API Manager, déjalas iguales. Los IDs de tenant/cliente no son secretos; nunca agregues client secrets al repositorio.
 
 ## Endpoints consumidos
 | Recurso | Endpoints |
@@ -52,6 +60,8 @@ AWS API Gateway ──► Backend Spring Boot (EC2) ── valida firma, issuer 
 | Mensajería | `/api/rabbit/queues\|exchanges\|bindings` (GET/POST/DELETE), `POST /api/rabbit/publish` |
 | Notificaciones | `GET /api/notificaciones` |
 | Préstamos | `GET/POST /api/prestamos`, `GET/PUT/DELETE /api/prestamos/{id}`, `PATCH /api/prestamos/{id}/devolver`, `GET /api/prestamos/usuario/{id}` |
+| Kafka (admin) | `GET/POST /api/kafka/topics`, `GET/PUT/DELETE /api/kafka/topics/{name}`, `GET /api/kafka/consumer-groups[/{id}]`, `POST /api/kafka/publish-evento\|publish\|publish-invalid`, `GET /api/kafka/metrics` |
+| Auditoría | `GET /api/auditoria?desde=&hasta=&tipo=&usuario=&correlationId=` |
 
 ## Requisitos del backend / Gateway
 - CORS permitiendo el origen del frontend (`http://localhost:4200` y el dominio desplegado) y el header `Authorization`.
@@ -62,5 +72,5 @@ AWS API Gateway ──► Backend Spring Boot (EC2) ── valida firma, issuer 
 src/app/
   core/ auth/ · interceptors/ · models/ · services/
   shared/ layout/ · confirm-dialog/
-  features/ home · libros · autores · categorias · usuarios · prestamos · mensajeria · notificaciones
+  features/ home · libros · autores · categorias · usuarios · prestamos · mensajeria · kafka · notificaciones
 ```

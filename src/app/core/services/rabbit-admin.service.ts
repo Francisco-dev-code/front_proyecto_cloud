@@ -22,7 +22,7 @@ export class RabbitAdminService {
   private readonly http = inject(HttpClient);
 
   private get url(): string {
-    return `${environment.apiUrl.replace(/\/+$/, '')}/api/rabbit`;
+    return `${environment.rabbitAdminUrl.replace(/\/+$/, '')}/api/rabbit`;
   }
 
   listarColas(): Observable<RabbitQueue[]> {

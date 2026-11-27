@@ -1,0 +1,76 @@
+<h3>Publicar DTO completo</h3>
+<form class="formulario" [formGroup]="formulario" (ngSubmit)="publicarEvento()">
+  <mat-form-field appearance="outline">
+    <mat-label>Tópico</mat-label>
+    <mat-select formControlName="topic" required>
+      @for (topic of topics(); track topic.name) {
+        <mat-option [value]="topic.name">{{ topic.name }}</mat-option>
+      }
+    </mat-select>
+    <mat-error>Selecciona un tópico</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>id (key del mensaje)</mat-label>
+    <input matInput formControlName="id" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>tipo</mat-label>
+    <mat-select formControlName="tipo">
+      @for (tipo of tipos; track tipo) {
+        <mat-option [value]="tipo">{{ tipo }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>destinatario</mat-label>
+    <input matInput formControlName="destinatario" placeholder="ana@correo.cl (opcional)" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="ancho">
+    <mat-label>contenido</mat-label>
+    <textarea matInput rows="2" formControlName="contenido" maxlength="1000"></textarea>
+    <mat-error>El contenido es obligatorio (máx. 1000 caracteres)</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>correlationId</mat-label>
+    <input matInput formControlName="correlationId" />
+  </mat-form-field>
+
+  <button mat-flat-button color="primary" type="submit" [disabled]="enviando()">
+    <mat-icon>send</mat-icon> Publicar evento
+  </button>
+</form>
+<p class="nota">
+  <code>fechaEnvio</code> se genera con ISO-8601 y <code>usuario</code> se toma del token de Entra
+  ID.
+</p>
+
+<h3>Publicación rápida</h3>
+<form class="formulario" [formGroup]="formularioSimple" (ngSubmit)="publicarSimple()">
+  <mat-form-field appearance="outline">
+    <mat-label>Contenido</mat-label>
+    <input matInput formControlName="contenido" />
+  </mat-form-field>
+  <button mat-stroked-button type="submit" [disabled]="enviando()">
+    <mat-icon>bolt</mat-icon> Publicar simple
+  </button>
+</form>
+
+<h3>Demo del DLT</h3>
+<p class="nota">
+  Publica un mensaje inválido en <code>biblioteca.notificaciones</code>; tras 4 entregas termina en
+  <code>biblioteca.notificaciones.DLT</code> y aumenta <code>failures</code> en métricas.
+</p>
+<button
+  mat-stroked-button
+  color="warn"
+  type="button"
+  (click)="publicarInvalido()"
+  [disabled]="enviando()"
+>
+  <mat-icon>warning</mat-icon> Simular fallo
+</button>
