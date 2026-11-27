@@ -19,6 +19,7 @@ Inicio · Libros (CRUD + búsqueda) · Autores · Categorías · Usuarios · Pr�
 - **Kafka UI**: enlace a `http://localhost:8085` para ver key/value de los mensajes (no se consume su API).
 - Contrato y flujo de demostración: [`docs/CONTRATO-API-KAFKA-FRONTEND.md`](docs/CONTRATO-API-KAFKA-FRONTEND.md).
 - Guía de evidencias EP5 (fotos, referencias `EV-xx` y rúbrica): [`docs/GUIA-EVIDENCIAS.md`](docs/GUIA-EVIDENCIAS.md) y [`docs/GUIA-EVIDENCIAS-EP5.docx`](docs/GUIA-EVIDENCIAS-EP5.docx).
+- Reparto en dos partes: [`docs/GUIA-EVIDENCIAS-PARTE-A.docx`](docs/GUIA-EVIDENCIAS-PARTE-A.docx) (17 fotos) y [`docs/GUIA-EVIDENCIAS-PARTE-B.docx`](docs/GUIA-EVIDENCIAS-PARTE-B.docx) (18 fotos). Cada una incluye la puesta en marcha desde cero.
 
 ## Ejecutar
 ```bash
