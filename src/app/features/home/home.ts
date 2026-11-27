@@ -64,8 +64,8 @@ export class HomeComponent implements OnInit {
     const activa = !this.auth.isEnabled || this.auth.isAuthenticated;
     this.autenticado.set(activa);
 
-    // Visitante sin sesión: no se hace ninguna solicitud a la API.
-    if (activa && !this.cargado) {
+    // El catálogo es público; los datos privados se cargan aparte si hay sesión.
+    if (!this.cargado) {
       this.cargado = true;
       this.cargarResumen();
     }
@@ -75,27 +75,61 @@ export class HomeComponent implements OnInit {
     forkJoin({
       libros: this.libroService.getAll(),
       autores: this.autorService.getAll(),
-      categorias: this.categoriaService.getAll(),
+      categorias: this.categoriaService.getAll()
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ libros, autores, categorias }) => {
+          const publicas: Tarjeta[] = [
+            { etiqueta: 'Libros', valor: libros.length, icono: 'menu_book', ruta: '/libros' },
+            { etiqueta: 'Autores', valor: autores.length, icono: 'person', ruta: '/autores' },
+            {
+              etiqueta: 'Categorías',
+              valor: categorias.length,
+              icono: 'category',
+              ruta: '/categorias'
+            },
+            { etiqueta: 'Usuarios', valor: 0, icono: 'group', ruta: '/usuarios' },
+            {
+              etiqueta: 'Préstamos activos',
+              valor: 0,
+              icono: 'assignment_return',
+              ruta: '/prestamos'
+            }
+          ];
+          this.tarjetas.set(publicas);
+
+          if (this.auth.isAuthenticated) {
+            this.cargarDatosPrivados(publicas);
+          }
+        },
+        error: () => {
+          // Si el backend aún no está disponible, se deja el panel en cero sin bloquear la vista.
+        }
+      });
+  }
+
+  private cargarDatosPrivados(publicas: Tarjeta[]): void {
+    forkJoin({
       usuarios: this.usuarioService.getAll(),
       prestamos: this.prestamoService.getAll()
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: ({ libros, autores, categorias, usuarios, prestamos }) => {
-        this.tarjetas.set([
-          { etiqueta: 'Libros', valor: libros.length, icono: 'menu_book', ruta: '/libros' },
-          { etiqueta: 'Autores', valor: autores.length, icono: 'person', ruta: '/autores' },
-          { etiqueta: 'Categorías', valor: categorias.length, icono: 'category', ruta: '/categorias' },
-          { etiqueta: 'Usuarios', valor: usuarios.length, icono: 'group', ruta: '/usuarios' },
-          {
-            etiqueta: 'Préstamos activos',
-            valor: prestamos.filter((p) => p.estado !== 'DEVUELTO').length,
-            icono: 'assignment_return',
-            ruta: '/prestamos'
-          }
-        ]);
-      },
-      error: () => {
-        // Si el backend aún no está disponible, se deja el panel en cero sin bloquear la vista.
-      }
-    });
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ usuarios, prestamos }) =>
+          this.tarjetas.set([
+            ...publicas.slice(0, 3),
+            { etiqueta: 'Usuarios', valor: usuarios.length, icono: 'group', ruta: '/usuarios' },
+            {
+              etiqueta: 'Préstamos activos',
+              valor: prestamos.filter((p) => p.estado !== 'DEVUELTO').length,
+              icono: 'assignment_return',
+              ruta: '/prestamos'
+            }
+          ]),
+        error: () => {
+          // Sin sesión válida estos contadores se dejan en cero.
+        }
+      });
   }
 }

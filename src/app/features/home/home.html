@@ -1,21 +1,21 @@
 <h1>Panel general</h1>
 
 @if (!autenticado()) {
-  <p class="subtitulo">
-    Bienvenido al Sistema de Gestión de Biblioteca. Para consultar o gestionar
-    libros, autores, usuarios y préstamos necesitas una cuenta.
-  </p>
+  <section class="bienvenida">
+    <mat-icon class="bienvenida-icono">local_library</mat-icon>
+    <div>
+      <h2>Bienvenido a tu biblioteca</h2>
+      <p>
+        Explora libremente libros, autores y categorías. Para ver préstamos,
+        notificaciones y datos de usuarios, inicia sesión cuando quieras.
+      </p>
+    </div>
+  </section>
 
-  <div class="acciones-visitante">
-    <a mat-flat-button color="primary" routerLink="/registro">
-      <mat-icon>person_add</mat-icon>
-      Registrarme
-    </a>
-    <button mat-stroked-button type="button" (click)="auth.login('/inicio')">
-      <mat-icon>login</mat-icon>
-      Iniciar sesión
-    </button>
-  </div>
+  <p class="pista">
+    <mat-icon>login</mat-icon>
+    Inicia sesión desde el botón de arriba a la derecha cuando quieras gestionar los datos.
+  </p>
 } @else {
 <p class="subtitulo">Resumen del estado actual de la biblioteca.</p>
 

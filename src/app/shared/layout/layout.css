@@ -1,23 +1,39 @@
 .contenedor {
   height: 100vh;
+  background: var(--app-bg);
 }
 
 .sidenav {
-  width: 240px;
+  width: 244px;
+  border-right: 1px solid var(--app-border);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbfe 100%);
 }
 
 .marca {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  font-size: 1.1rem;
-  font-weight: 600;
+  gap: 0.65rem;
+  padding: 1.1rem 1rem;
+  margin-bottom: 0.35rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--app-primary);
+  border-bottom: 1px solid var(--app-border);
 }
 
-.activo {
-  background-color: rgba(63, 81, 181, 0.1);
-  color: #3f51b5;
+.marca mat-icon {
+  color: var(--app-accent);
+}
+
+.sidenav .mat-mdc-list-item {
+  margin: 0.15rem 0.55rem;
+  border-radius: 10px;
+}
+
+.sidenav .mat-mdc-list-item.activo {
+  background: var(--app-primary-soft);
+  color: var(--app-primary);
+  font-weight: 600;
 }
 
 .toolbar {
@@ -27,6 +43,15 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  padding: 0 1.25rem;
+  background: linear-gradient(90deg, var(--app-primary), var(--app-primary-dark)) !important;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(22, 58, 90, 0.25);
+}
+
+.toolbar .titulo {
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .separador-toolbar {
@@ -44,18 +69,29 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .modo-demo {
-  opacity: 0.85;
+  opacity: 0.9;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
 }
 
-.toolbar button {
+.toolbar button,
+.toolbar a {
   color: inherit;
 }
 
+.toolbar .mat-mdc-outlined-button {
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
 .contenido {
-  padding: 1.5rem;
+  padding: 1.75rem;
   max-width: 1200px;
   margin: 0 auto;
 }

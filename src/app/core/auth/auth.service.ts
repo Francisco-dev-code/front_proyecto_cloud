@@ -1,10 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import {
-  AccountInfo,
-  AuthenticationResult,
-  InteractionRequiredAuthError,
-  PromptValue
-} from '@azure/msal-browser';
+import { AccountInfo, AuthenticationResult, PromptValue } from '@azure/msal-browser';
 import { MsalService } from '@azure/msal-angular';
 import { environment } from '../../../environments/environment';
 
@@ -95,6 +90,7 @@ export class AuthService {
     });
   }
 
+  /** Token silencioso para las peticiones; nunca dispara un login automático. */
   acquireToken(): Promise<AuthenticationResult> {
     const account = this.account;
 
@@ -104,24 +100,9 @@ export class AuthService {
       );
     }
 
-    return this.msal.instance
-      .acquireTokenSilent({
-        account,
-        scopes: [environment.entra.apiScope]
-      })
-      .catch((error: unknown): Promise<AuthenticationResult> => {
-        if (error instanceof InteractionRequiredAuthError) {
-          void this.msal.instance.acquireTokenRedirect({
-            scopes: [environment.entra.apiScope],
-            account
-          });
-
-          return Promise.reject(
-            new Error('Se requiere interacción. Redirigiendo a Microsoft Entra ID.')
-          );
-        }
-
-        return Promise.reject(error);
-      });
+    return this.msal.instance.acquireTokenSilent({
+      account,
+      scopes: [environment.entra.apiScope]
+    });
   }
 }

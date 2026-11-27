@@ -1,40 +1,87 @@
 .subtitulo {
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--app-muted);
   margin-bottom: 1.5rem;
 }
+
+.bienvenida {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--app-border);
+  border-left: 4px solid var(--app-accent);
+  border-radius: var(--app-radius);
+  background: linear-gradient(135deg, #ffffff 0%, var(--app-primary-soft) 100%);
+  box-shadow: var(--app-shadow);
+}
+
+.bienvenida h2 {
+  margin: 0 0 0.35rem;
+}
+
+.bienvenida p {
+  margin: 0;
+  color: var(--app-muted);
+  max-width: 60ch;
+}
+
+.bienvenida-icono {
+  font-size: 3rem;
+  height: 3rem;
+  width: 3rem;
+  color: var(--app-accent);
+}
+
+.pista {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--app-muted);
+  font-size: 0.9rem;
+}
+
+.pista mat-icon {
+  font-size: 1.1rem;
+  height: 1.1rem;
+  width: 1.1rem;
+  color: var(--app-accent);
+}
+
 .grilla {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
 }
+
 .enlace-tarjeta {
   text-decoration: none;
   color: inherit;
 }
+
 .tarjeta {
   text-align: center;
-  transition: box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
 .tarjeta:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(31, 78, 121, 0.16) !important;
 }
+
 .icono {
   font-size: 2.5rem;
   height: 2.5rem;
   width: 2.5rem;
-  color: #3f51b5;
+  color: var(--app-accent);
 }
+
 .valor {
   font-size: 2rem;
   font-weight: 600;
   margin-top: 0.25rem;
 }
-.etiqueta {
-  color: rgba(0, 0, 0, 0.6);
-}
 
-.acciones-visitante {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+.etiqueta {
+  color: var(--app-muted);
 }

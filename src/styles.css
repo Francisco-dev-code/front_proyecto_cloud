@@ -1,6 +1,73 @@
 /* Estilos globales de la aplicación */
-html, body {
+:root {
+  --app-primary: #1f4e79;
+  --app-primary-dark: #163a5a;
+  --app-primary-soft: #eaf2f9;
+  --app-accent: #0b7285;
+  --app-text: #1f2933;
+  --app-muted: #5f7282;
+  --app-bg: #f4f7fb;
+  --app-border: #dbe6ef;
+  --app-radius: 14px;
+  --app-shadow: 0 6px 20px rgba(31, 78, 121, 0.08);
+}
+
+html,
+body {
   height: 100%;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+h1,
+h2,
+h3 {
+  color: var(--app-primary);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+}
+
+a {
+  color: var(--app-accent);
+}
+
+.mat-mdc-card {
+  border-radius: var(--app-radius) !important;
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow) !important;
+}
+
+.mat-mdc-header-cell {
+  background: var(--app-primary-soft);
+  color: var(--app-primary);
+  font-weight: 600;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  background: #f8fbfe;
+}
+
+.mat-mdc-unelevated-button,
+.mat-mdc-raised-button {
+  letter-spacing: 0.01em;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: var(--app-primary-dark);
+  --mdc-snackbar-supporting-text-color: #fff;
+}
+
+::selection {
+  background: rgba(31, 78, 121, 0.18);
 }
