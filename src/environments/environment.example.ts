@@ -6,6 +6,8 @@ export const environment = {
   // Bases de los microservicios administradores (sin /api).
   kafkaAdminUrl: 'https://TU_API_GATEWAY_ID.execute-api.us-east-1.amazonaws.com',
   rabbitAdminUrl: 'https://TU_API_GATEWAY_ID.execute-api.us-east-1.amazonaws.com',
+  // Consola visual de Kafka (solo enlace; el front no consume su API).
+  kafkaUiUrl: 'http://localhost:8085',
   entra: {
     enabled: true,
     // true si el tenant permite auto-registro (Entra External ID). Si es false, «Crear cuenta» usa el login normal.
@@ -13,6 +15,6 @@ export const environment = {
     clientId: 'TU_ANGULAR_CLIENT_ID',
     tenantId: 'TU_TENANT_ID',
     redirectUri: 'http://localhost:4200',
-    apiScope: 'api://TU_API_CLIENT_ID/recurso.read'
-  }
+    apiScope: 'api://TU_API_CLIENT_ID/recurso.read',
+  },
 };

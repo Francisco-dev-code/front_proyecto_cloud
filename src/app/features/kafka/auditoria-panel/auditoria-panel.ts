@@ -44,7 +44,9 @@ export class AuditoriaPanelComponent implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
 
   protected readonly columnas = [
+    'mensajeId',
     'fechaCreacion',
+    'fechaProcesamiento',
     'eventoTipo',
     'estado',
     'usuario',
@@ -114,5 +116,24 @@ export class AuditoriaPanelComponent implements OnInit {
   limpiar(): void {
     this.formulario.reset({ desde: '', hasta: '', tipo: '', usuario: '', correlationId: '' });
     this.buscar();
+  }
+
+  /** Copia el correlationId para reutilizarlo como filtro exacto en otra consulta. */
+  async copiarCorrelationId(valor: string | null | undefined): Promise<void> {
+    if (!valor || !navigator.clipboard) {
+      this.snackBar.open('El correlationId no está disponible para copiar', 'Cerrar', {
+        duration: 2500,
+      });
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(valor);
+      this.snackBar.open('Correlation ID copiado', 'Cerrar', { duration: 2000 });
+    } catch {
+      this.snackBar.open('No se pudo copiar; selecciónalo manualmente', 'Cerrar', {
+        duration: 3000,
+      });
+    }
   }
 }

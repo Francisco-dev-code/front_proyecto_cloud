@@ -33,6 +33,12 @@ export interface PublicarMensaje {
   payload: string;
 }
 
+/** Cuerpo de `POST /api/notificaciones`: publicación de negocio que genera auditoría. */
+export interface PublicarNotificacionRequest {
+  destinatario?: string | null;
+  contenido: string;
+}
+
 export type TipoNotificacion = 'NOTIFICACION' | 'TICKET' | 'DOCUMENTO';
 export type EstadoNotificacion = 'PENDIENTE' | 'PROCESADO' | 'FALLIDO';
 

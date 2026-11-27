@@ -32,6 +32,7 @@ export class MetricsPanelComponent {
     'totalMessages',
     'eventsPerMinute',
     'failures',
+    'failuresPerMinute',
   ];
   protected readonly columnasGrupos = ['groupId', 'state', 'members', 'totalLag'];
   protected readonly columnasDistribucion = [
@@ -71,4 +72,8 @@ export class MetricsPanelComponent {
 
   protected readonly actualizado = (): string => this.datos()?.generatedAt ?? '—';
   protected readonly intervaloSegundos = (): number => this.intervalo() / 1000;
+
+  /** El backend puede devolver `Stable` o `STABLE`; se normaliza para la tabla. */
+  protected readonly estado = (state: string | null | undefined): string =>
+    (state ?? '—').toUpperCase();
 }

@@ -4,6 +4,11 @@
   <code>EventoMensajeria</code> y los consumidores alimentan notificaciones y auditoría.
 </p>
 
+<a mat-flat-button color="accent" [href]="kafkaUiUrl" target="_blank" rel="noopener noreferrer">
+  <mat-icon>monitoring</mat-icon>
+  Abrir Kafka UI
+</a>
+
 <mat-tab-group animationDuration="150ms">
   <mat-tab label="Tópicos">
     <ng-template matTabContent><app-topics-panel /></ng-template>

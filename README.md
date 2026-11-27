@@ -13,10 +13,12 @@ Inicio · Libros (CRUD + búsqueda) · Autores · Categorías · Usuarios · Pr�
 ### Streaming con Kafka (EFT)
 - **Tópicos**: crear, listar, ver configuración (particiones, réplicas, retention, cleanup policy), actualizar y eliminar.
 - **Consumer groups**: miembros, tópicos suscritos y particiones asignadas.
-- **Publicación**: DTO completo (`EventoMensajeria`), publicación rápida y mensaje inválido para demostrar el DLT.
+- **Publicación**: DTO completo (`EventoMensajeria`), publicación rápida, mensaje inválido para demostrar el DLT y publicación de negocio (`POST /api/notificaciones`) que sí genera auditoría.
 - **Métricas en vivo**: eventos/min, fallos, offsets, lag y distribución por partición con polling del intervalo que informa el backend.
-- **Auditoría**: filtros por fecha, tipo, usuario y correlationId sobre `/api/auditoria`.
+- **Auditoría**: filtros por fecha, tipo, usuario y correlationId sobre `/api/auditoria`, con copia de `correlationId` al portapapeles.
+- **Kafka UI**: enlace a `http://localhost:8085` para ver key/value de los mensajes (no se consume su API).
 - Contrato y flujo de demostración: [`docs/CONTRATO-API-KAFKA-FRONTEND.md`](docs/CONTRATO-API-KAFKA-FRONTEND.md).
+- Guía de evidencias EP5 (fotos, referencias `EV-xx` y rúbrica): [`docs/GUIA-EVIDENCIAS.md`](docs/GUIA-EVIDENCIAS.md) y [`docs/GUIA-EVIDENCIAS-EP5.docx`](docs/GUIA-EVIDENCIAS-EP5.docx).
 
 ## Ejecutar
 ```bash
@@ -48,7 +50,7 @@ AWS API Gateway ──► Backend Spring Boot (EC2) ── valida firma, issuer 
 | `environment.localhost.ts` | `npm run start:local`: backend real en 8080/8081/8082 con login |
 | `environment.example.ts` | Plantilla |
 
-Las URLs son **bases sin `/api`**; los servicios construyen `{base}/api/{recurso}`. `apiUrl` apunta a la API principal, `kafkaAdminUrl` al administrador de Kafka y `rabbitAdminUrl` al de RabbitMQ. En local usan los puertos 8080/8081/8082; si en la nube los tres están tras el mismo API Manager, déjalas iguales. Los IDs de tenant/cliente no son secretos; nunca agregues client secrets al repositorio.
+Las URLs son **bases sin `/api`**; los servicios construyen `{base}/api/{recurso}`. `apiUrl` apunta a la API principal, `kafkaAdminUrl` al administrador de Kafka y `rabbitAdminUrl` al de RabbitMQ. En local usan los puertos 8080/8081/8082; si en la nube los tres están tras el mismo API Manager, déjalas iguales. `kafkaUiUrl` es solo un enlace visual a la consola local (`http://localhost:8085`); Angular no llama a su API ni envía el JWT. Los IDs de tenant/cliente no son secretos; nunca agregues client secrets al repositorio.
 
 ## Endpoints consumidos
 | Recurso | Endpoints |

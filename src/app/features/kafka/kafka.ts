@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { environment } from '../../../environments/environment';
 import { TopicsPanelComponent } from './topics-panel/topics-panel';
 import { ConsumerGroupsPanelComponent } from './consumer-groups-panel/consumer-groups-panel';
 import { PublicarPanelComponent } from './publicar-panel/publicar-panel';
@@ -12,6 +15,8 @@ import { AuditoriaPanelComponent } from './auditoria-panel/auditoria-panel';
   standalone: true,
   imports: [
     MatTabsModule,
+    MatButtonModule,
+    MatIconModule,
     TopicsPanelComponent,
     ConsumerGroupsPanelComponent,
     PublicarPanelComponent,
@@ -22,4 +27,6 @@ import { AuditoriaPanelComponent } from './auditoria-panel/auditoria-panel';
   styleUrl: './kafka.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class KafkaComponent {}
+export class KafkaComponent {
+  protected readonly kafkaUiUrl = environment.kafkaUiUrl;
+}

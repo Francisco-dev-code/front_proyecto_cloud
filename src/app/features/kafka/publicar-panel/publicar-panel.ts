@@ -15,8 +15,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { KafkaAdminService } from '../../../core/services/kafka-admin.service';
+import { NotificacionService } from '../../../core/services/notificacion.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { EventoMensajeria, TipoEventoKafka, TopicResponse } from '../../../core/models/kafka.model';
+import {
+  EventoMensajeria,
+  PublicacionResponse,
+  TipoEventoKafka,
+  TopicResponse,
+} from '../../../core/models/kafka.model';
 import { mensajeError } from '../../../core/utils/http-error';
 
 @Component({
@@ -38,11 +44,13 @@ export class PublicarPanelComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly fb = inject(FormBuilder);
   private readonly servicio = inject(KafkaAdminService);
+  private readonly servicioNegocio = inject(NotificacionService);
   private readonly auth = inject(AuthService);
   private readonly snackBar = inject(MatSnackBar);
 
   protected readonly topics = signal<TopicResponse[]>([]);
   protected readonly enviando = signal(false);
+  protected readonly ultimaPublicacionNegocio = signal<PublicacionResponse | null>(null);
 
   protected readonly tipos: TipoEventoKafka[] = [
     'NOTIFICACION',
@@ -63,6 +71,11 @@ export class PublicarPanelComponent implements OnInit {
 
   protected readonly formularioSimple = this.fb.nonNullable.group({
     contenido: ['Hola desde el front', Validators.required],
+  });
+
+  protected readonly formularioNegocio = this.fb.nonNullable.group({
+    destinatario: ['ana@correo.cl'],
+    contenido: ['Demo auditoría', [Validators.required, Validators.maxLength(1000)]],
   });
 
   ngOnInit(): void {
@@ -108,9 +121,7 @@ export class PublicarPanelComponent implements OnInit {
     if (!topic) return;
 
     const v = this.formulario.getRawValue();
-    const claims = this.auth.account?.idTokenClaims as
-      | Record<string, unknown>
-      | undefined;
+    const claims = this.auth.account?.idTokenClaims as Record<string, unknown> | undefined;
     const evento: EventoMensajeria = {
       id: v.id.trim() || this.uuid(),
       tipo: v.tipo,
@@ -118,10 +129,7 @@ export class PublicarPanelComponent implements OnInit {
       contenido: v.contenido,
       fechaEnvio: new Date().toISOString(),
       correlationId: v.correlationId.trim() || this.uuid(),
-      usuario:
-        (claims?.['preferred_username'] as string) ||
-        this.auth.account?.username ||
-        null,
+      usuario: (claims?.['preferred_username'] as string) || this.auth.account?.username || null,
     };
 
     this.enviando.set(true);
@@ -171,6 +179,36 @@ export class PublicarPanelComponent implements OnInit {
           this.snackBar.open(`${res.mensaje} (id: ${res.id})`, 'Cerrar', { duration: 4000 });
         },
         error: (e) => this.avisar(mensajeError(e, 'Error al publicar el mensaje inválido')),
+      });
+  }
+
+  /**
+   * Productor real de negocio: `POST /api/notificaciones` en la API principal.
+   * Es el único productor del panel que genera auditoría con `correlationId`.
+   */
+  publicarNegocio(): void {
+    if (this.formularioNegocio.invalid) {
+      this.formularioNegocio.markAllAsTouched();
+      return;
+    }
+
+    const v = this.formularioNegocio.getRawValue();
+    this.enviando.set(true);
+    this.servicioNegocio
+      .publicar({
+        destinatario: v.destinatario.trim() || null,
+        contenido: v.contenido,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.enviando.set(false);
+          this.ultimaPublicacionNegocio.set(res);
+          this.snackBar.open(`${res.mensaje} (id: ${res.id}, estado: ${res.estado})`, 'Cerrar', {
+            duration: 4000,
+          });
+        },
+        error: (e) => this.avisar(mensajeError(e, 'Error al publicar la notificación de negocio')),
       });
   }
 }

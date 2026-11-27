@@ -12,6 +12,8 @@ publica y consulta eventos a través de los microservicios Spring Boot, siempre 
 | Admin Rabbit (`biblioteca-admin-rabbit`) | `http://localhost:8082` | `/api/rabbit/**` (sin cambios)                                                                            |
 
 En `src/environments/` esas bases son `apiUrl`, `kafkaAdminUrl` y `rabbitAdminUrl`.
+`kafkaUiUrl` (`http://localhost:8085`) es solo un enlace visual: el front no consume la API de Kafka UI
+ni le envía el JWT.
 `MsalInterceptor` adjunta `Authorization: Bearer <token>` a `{base}/api/*` en las tres bases y
 `authRequiredInterceptor` exige sesión antes de enviar la petición. CORS permitido: `http://localhost:4200`.
 
@@ -54,8 +56,11 @@ claim `preferred_username` del token. La key del mensaje es `id`. No se usa Sche
 | Publicar evento       | `POST /api/kafka/publish-evento` (DTO completo), `POST /api/kafka/publish` (rápido), `POST /api/kafka/publish-invalid` (demo DLT) |
 | Métricas en vivo      | `GET /api/kafka/metrics`, polling con `pollingIntervalSeconds` de la propia respuesta (5 s por defecto)                           |
 | Auditoría             | `GET /api/auditoria?desde=&hasta=&tipo=&usuario=&correlationId=`                                                                  |
+| Publicación negocio   | `POST /api/notificaciones` (API principal, genera auditoría; los productores de `/api/kafka/**` no la generan)                     |
 
 Respuestas de publicación: `{ "mensaje": "...", "id": "...", "estado": "PENDIENTE" }`.
+`POST /api/notificaciones` responde `202` y el `correlationId` se obtiene en `/api/auditoria`;
+la tabla permite copiarlo para reutilizarlo como filtro exacto.
 Las métricas incluyen `eventsPerMinute`, `failures`, `committedOffsets`, `lagByTopic` y
 `distribution` con `committedOffset`, `endOffset` y `lag` por partición.
 
@@ -72,6 +77,7 @@ Las métricas incluyen `eventsPerMinute`, `failures`, `committedOffsets`, `lagBy
 6. Abrir **Métricas en vivo**: repetir publicaciones y comprobar que suben `eventsPerMinute`, avanzan
    los `committedOffsets` y baja el `lag`.
 7. Pulsar **Simular fallo**: tras los reintentos aparece `biblioteca.notificaciones.DLT` y aumenta `failures`.
-8. Abrir **Auditoría**: filtrar por `correlationId` y mostrar el registro con `canal`, `estado` y
-   `fechaProcesamiento`.
+8. En **Publicar evento → Publicación de negocio**, enviar una notificación con `POST /api/notificaciones`.
+   Abrir **Auditoría**: filtrar por `correlationId` (botón de copia) y mostrar `mensajeId`, `canal`,
+   `estado` y `fechaProcesamiento`.
 9. Volver a **Mensajería (RabbitMQ)** y **Notificaciones** para evidenciar que la integración previa sigue igual.

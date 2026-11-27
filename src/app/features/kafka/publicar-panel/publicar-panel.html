@@ -74,3 +74,31 @@
 >
   <mat-icon>warning</mat-icon> Simular fallo
 </button>
+
+<h3>Publicación de negocio (con auditoría)</h3>
+<p class="nota">
+  Usa <code>POST /api/notificaciones</code> en la API principal. A diferencia de los productores de
+  prueba, genera una fila en <code>/api/auditoria</code> con <code>correlationId</code>,
+  <code>canal</code>, <code>usuario</code> del JWT y <code>estado=PROCESADO</code>.
+</p>
+<form class="formulario" [formGroup]="formularioNegocio" (ngSubmit)="publicarNegocio()">
+  <mat-form-field appearance="outline">
+    <mat-label>destinatario</mat-label>
+    <input matInput formControlName="destinatario" placeholder="ana@correo.cl (opcional)" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="ancho">
+    <mat-label>contenido</mat-label>
+    <textarea matInput rows="2" formControlName="contenido" maxlength="1000"></textarea>
+    <mat-error>El contenido es obligatorio (máx. 1000 caracteres)</mat-error>
+  </mat-form-field>
+  <button mat-flat-button color="primary" type="submit" [disabled]="enviando()">
+    <mat-icon>send</mat-icon> Publicar notificación
+  </button>
+</form>
+@if (ultimaPublicacionNegocio(); as res) {
+  <p class="nota">
+    Última publicación: HTTP 202 · id <code>{{ res.id }}</code> · estado
+    <code>{{ res.estado }}</code
+    >. Consulta el <code>correlationId</code> en la pestaña Auditoría.
+  </p>
+}
