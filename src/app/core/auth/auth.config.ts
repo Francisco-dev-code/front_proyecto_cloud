@@ -40,6 +40,14 @@ export function msalGuardConfigFactory(): MsalGuardConfiguration {
 }
 
 export function msalInterceptorConfigFactory(): MsalInterceptorConfiguration {
+  // Modo demo (entra.enabled = false): MSAL no debe pedir token ni redirigir al login.
+  if (!environment.entra.enabled) {
+    return {
+      interactionType: InteractionType.Redirect,
+      protectedResourceMap: new Map<string, string[]>()
+    };
+  }
+
   const protectedResourceMap = new Map<string, string[]>();
 
   // Los tres microservicios (API, admin Kafka y admin Rabbit) validan el mismo JWT.
